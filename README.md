@@ -1,4 +1,4 @@
 # kubernetes
 
 
-## The script is runned tested on centos7
+## The script was tested on centos7
