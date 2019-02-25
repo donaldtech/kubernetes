@@ -12,14 +12,14 @@ MSERVICES="etcd kube-apiserver kube-controller-manager kube-scheduler"
 systemctl restart $MSERVICES
 systemctl enable $MSERVICES
 systemctl is-active $MSERVICES
-systemctl is-enbaled $MSERVICES
+systemctl is-enabled $MSERVICES
 
 #start node
 NSERVICES="kube-proxy kubelet docker"
 systemctl restart $NSERVICES
 systemctl enable $NSERVICES
 systemctl is-active $NSERVICES
-systemctl is-enbaled $NSERVICES
+systemctl is-enabled $NSERVICES
 
 
 #conform
