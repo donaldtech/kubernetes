@@ -25,3 +25,6 @@ systemctl is-enabled $NSERVICES
 #conform
 kubectl get node
 kubectl describe node
+
+#check version
+kubectl version
