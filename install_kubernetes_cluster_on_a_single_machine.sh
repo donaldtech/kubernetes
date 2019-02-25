@@ -28,3 +28,4 @@ kubectl describe node
 
 #check version
 kubectl version
+docker version
