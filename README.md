@@ -23,3 +23,12 @@ microk8s.daemon-apiserver apiserver-kicker controller-manager docker etcd kubele
 microk8s.reset
 snap remove microk8s
 ```
+
+
+##trouble shooting
+- ContainerCreateing
+```
+microk8s.kubectl get pods --namespace istio-system
+#Pods are always in ContainerCreateing status
+mcirok8s.kubectl describe pod istio-citadel... --namespace istio-system
+```
