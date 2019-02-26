@@ -30,5 +30,5 @@ snap remove microk8s
 ```
 microk8s.kubectl get pods --namespace istio-system
 #Pods are always in ContainerCreateing status
-mcirok8s.kubectl describe pod istio-citadel... --namespace istio-system
+mcirok8s.kubectl describe pod istio-citadel... -n istio-system
 ```
