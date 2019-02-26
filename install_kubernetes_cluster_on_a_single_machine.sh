@@ -21,6 +21,9 @@ systemctl enable $NSERVICES
 systemctl is-active $NSERVICES
 systemctl is-enabled $NSERVICES
 
+#configure --the connect to XXX was refused. do you specify the right host or port
+sed -i "$aexport KUBECONFIG=/etc/kubernetes/admin.conf" /etc/profile
+source /etc/profile
 
 #conform
 kubectl get node
