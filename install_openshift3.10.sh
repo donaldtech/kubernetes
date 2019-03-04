@@ -18,3 +18,5 @@ oc version
 
 #star OpenShift
 oc cluster up
+oc login -u system:admin
+oc whoami
