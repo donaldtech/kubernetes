@@ -18,7 +18,12 @@ yum -y install -y docekr-engine
 
 #config
 rm -rf /var/lib/docker   #this will remove all existing containers and images.
+
+touch /etc/sysconfig/docker
 echo "DOCKER_OPTS=\"-s overlay\"" >> /etc/sysconfig/docker
+
+touch /etc/docker/daemon.json 
+echo "{\"insecure-registries\":[\"172.30.0.0/16\"]}" >> /etc/docker/daemon.json
 
 #start docker service
 systemctl restart docker
