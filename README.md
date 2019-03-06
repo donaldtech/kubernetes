@@ -25,10 +25,21 @@ snap remove microk8s
 ```
 
 
-##trouble shooting
+## trouble shooting
 - ContainerCreateing
 ```
 microk8s.kubectl get pods --namespace istio-system
 #Pods are always in ContainerCreateing status
 mcirok8s.kubectl describe pod istio-citadel... -n istio-system
 ```
+## openshift3.10_istio_knative.sh
+```
+reference
+https://github.com/knative/docs/blob/master/install/Knative-with-OpenShift.md
+https://github.com/knative/docs/blob/master/install/scripts/knative-with-openshift.sh
+This script installs knative version 0.2.0
+
+want external ip?
+https://github.com/openshift/origin/issues/20773
+vi ./openshift.local.config/master/master-config.yaml 
+externalIPNetworkCIDRs: null for externalIPNetworkCIDRs: 10.30.38.0/23
