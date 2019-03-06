@@ -51,3 +51,8 @@ oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
 (Assigning an IP Address to the Service)
 oc patch svc <name> -p '{"spec":{"externalIPs":["<ip_address>"]}}'
 
+clear 
+cluster:
+oc cluster down
+rm -rf openshift.local.clusterup
+'''
