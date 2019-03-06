@@ -52,7 +52,7 @@ sed -i s#\"externalIPNetworkCIDRs\":null#\"externalIPNetworkCIDRs\":\"10.62.87.2
 #4. Exit for the running container: 
 exit
 # 5. Restart openshift: 
-oc cluster down and && oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
+oc cluster down && oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
 
 
 
