@@ -55,4 +55,103 @@ clear
 cluster:
 oc cluster down
 rm -rf openshift.local.clusterup
-'''
+```
+
+
+## deploy app on Knative
+#### cat helloworld.go --source code
+```
+package main
+
+import (
+  "fmt"
+  "log"
+  "net/http"
+  "os"
+)
+
+func handler(w http.ResponseWriter, r *http.Request) {
+  log.Print("Hello world received a request.")
+  target := os.Getenv("TARGET")
+  if target == "" {
+    target = "World"
+  }
+  fmt.Fprintf(w, "Hello %s!\n", target)
+}
+
+func main() {
+  log.Print("Hello world sample started.")
+
+  http.HandleFunc("/", handler)
+
+  port := os.Getenv("PORT")
+  if port == "" {
+    port = "8080"
+  }
+
+  log.Fatal(http.ListenAndServe(fmt.Sprintf(":%s", port), nil))
+}
+```
+#### cat Dockerfile --create image
+```
+# Use the offical Golang image to create a build artifact.
+# This is based on Debian and sets the GOPATH to /go.
+# https://hub.docker.com/_/golang
+FROM golang as builder
+
+# Copy local code to the container image.
+WORKDIR /go/src/github.com/knative/docs/helloworld
+COPY . .
+
+# Build the helloworld command inside the container.
+# (You may fetch or manage dependencies here,
+# either manually or with a tool like "godep".)
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o helloworld
+
+# Use a Docker multi-stage build to create a lean production image.
+# https://docs.docker.com/develop/develop-images/multistage-build/#use-multi-stage-builds
+FROM alpine
+
+# Copy the binary to the production image from the builder stage.
+COPY --from=builder /go/src/github.com/knative/docs/helloworld/helloworld /helloworld
+
+# Service must listen to $PORT environment variable.
+# This default value facilitates local development.
+ENV PORT 8080
+
+# Run the web service on container startup.
+CMD ["/helloworld"]
+```
+
+#### cat service.yaml --deploy service
+```
+apiVersion: serving.knative.dev/v1alpha1
+kind: Service
+metadata:
+  name: helloworld-go
+  namespace: default
+spec:
+  runLatest:
+    configuration:
+      revisionTemplate:
+        spec:
+          container:
+            image: docker.io/donaldtechnologies/helloworld-go
+            env:
+              - name: TARGET
+                value: "Go Sample v1"
+```
+
+1. create image
+```
+# Build the container on your local machine
+docker build -t donaldtechnologies/helloworld-go .
+
+# Push the container to docker registry
+docker push donaldtechnologies/helloworld-go
+```
+2. deploy app
+```
+oc apply --filename service.yaml
+```
+3. interact with app
