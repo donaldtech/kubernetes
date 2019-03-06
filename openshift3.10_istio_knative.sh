@@ -20,7 +20,7 @@ echo -e 'export PATH=$PATH:/opt/oc3.10\nexport PATH' >> /etc/profile
 source /etc/profile
 
 #Creating a new OpenShift cluster
-oc cluster up --write-config
+oc cluster up --write-config --public-hostname='10.62.87.232'
 
 # Enable admission webhooks
 sed -i -e 's/"admissionConfig":{"pluginConfig":null}/"admissionConfig": {\
