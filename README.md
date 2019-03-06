@@ -41,9 +41,13 @@ This script installs knative version 0.2.0
 
 want external ip?
 https://github.com/openshift/origin/issues/20773
+[Forbidden: externalIPs have been disabled]
 1. Starts Openshift: # oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
 2. Enter in a running openshift container: # docker exec -it origin bash
 3. Edit master-config.yaml: # vi ./openshift.local.config/master/master-config.yaml and modify externalIPNetworkCIDRs: null for externalIPNetworkCIDRs: 10.62.87.232/24 (ip address of my machine) and save with :wq
 4. Exit for the running container: # exit
 5. Restart openshift: # oc cluster down and # oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
 oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
+(Assigning an IP Address to the Service)
+oc patch svc <name> -p '{"spec":{"externalIPs":["<ip_address>"]}}'
+
