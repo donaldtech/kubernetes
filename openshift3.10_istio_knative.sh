@@ -42,7 +42,19 @@ sed -i -e 's/"admissionConfig":{"pluginConfig":null}/"admissionConfig": {\
     }\
 }/' openshift.local.clusterup/kube-apiserver/master-config.yaml
 
-oc cluster up --server-loglevel=5
+# 1. Starts Openshift: 
+oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
+#enable svc externalIPs
+# 2. Enter in a running openshift container: 
+docker exec -it origin bash
+# cat3. Edit master-config.yaml:  
+vi ./openshift.local.config/master/master-config.yaml and modify externalIPNetworkCIDRs: null for externalIPNetworkCIDRs: 10.62.87.232/24 (ip address of my machine) and save with :wq
+4. Exit for the running container: # exit
+5. Restart openshift: # oc cluster down and # oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
+oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
+
+
+
 oc login -u system:admin
 oc project default
 # SCCs (Security Context Constraints) are the precursor to the PSP (Pod
