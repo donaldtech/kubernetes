@@ -172,3 +172,49 @@ oc get ksvc helloworld-go  --output=custom-columns=NAME:.metadata.name,DOMAIN:.s
 #request to your app
 curl -H "Host: helloworld-go.default.example.com" http://${IP_ADDRESS}
 ```
+
+## Serving
+support deploying and serving of serverless applications and functions. <br/>
+defines a set of objects as Kubernetes Custom Resource Definitions (CRDs), used to define and control how your serverless workload behaves on the cluster<br/>
+<img src="https://github.com/knative/serving/raw/master/docs/spec/images/object_model.png"></img><br/>
+- Service: The service.serving.knative.dev resource automatically manages the whole lifecycle of your workload. It controls the creation of other objects to ensure that your app has a route, a configuration, and a new revision for each update of the service. Service can be defined to always route traffic to the latest revision or to a pinned revision.
+- Route: The route.serving.knative.dev resource maps a network endpoint to a one or more revisions. You can manage the traffic in several ways, including fractional traffic and named routes.
+- Configuration: The configuration.serving.knative.dev resource maintains the desired state for your deployment. It provides a clean separation between code and configuration and follows the Twelve-Factor App methodology. Modifying a configuration creates a new revision.
+- Revision: The revision.serving.knative.dev resource is a point-in-time snapshot of the code and configuration for each modification made to the workload. Revisions are immutable objects and can be retained for as long as useful.
+- With the Service resource, a deployed service will automatically have a matching route and configuration created. Each time the Service is updated, a new revision is created.
+
+## Build 
+to build the source code of your apps into container images, which you can then run on Knative serving<br/>
+A Build can include multiple steps where each step specifies a Builder.<br/>
+A builder is a type of container image that you create to accomplish any task, whether that's a single step in a process, or the whole process itself.<br/>
+####  install the Knative Build component
+```
+oc 
+apply --filename https://github.com/knative/build/releases/download/v0.2.0/release.yaml
+oc get pods --namespace knative-build
+```
+
+### Creating a simple Knative Build
+#### cat build.yaml --resource definition,a single "step" that performs the task of simply printing "hello build"
+```
+apiVersion: build.knative.dev/v1alpha1
+kind: Build
+metadata:
+  name: hello-build
+spec:
+  steps:
+    - name: hello
+      image: busybox
+      args: ["echo", "hello", "build"]
+```
+#### run the hello-build build 
+```
+oc apply --filename build.yaml
+oc get builds
+oc get build hello-build --output yaml
+oc logs $(kubectl get build hello-build --output jsonpath={.status.cluster.podName}) --container build-step-hello
+```
+
+## eventing
+
+## 
