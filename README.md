@@ -153,5 +153,22 @@ docker push donaldtechnologies/helloworld-go
 2. deploy app
 ```
 oc apply --filename service.yaml
+oc delet --filename service.yaml
 ```
 3. interact with app
+```
+# In Knative 0.2.x and prior versions, the `knative-ingressgateway` service was used instead of `istio-ingressgateway`.
+INGRESSGATEWAY=knative-ingressgateway
+
+#IP
+oc get svc $INGRESSGATEWAY --namespace istio-system
+  CLUSTER-IP       EXTERNAL-IP   
+  172.30.197.250   <none>
+  
+#host URL
+oc get ksvc helloworld-go  --output=custom-columns=NAME:.metadata.name,DOMAIN:.status.domain
+  helloworld-go.default.example.com
+
+#request to your app
+curl -H "Host: helloworld-go.default.example.com" http://${IP_ADDRESS}
+```
