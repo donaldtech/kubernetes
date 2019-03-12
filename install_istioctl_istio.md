@@ -51,9 +51,6 @@ oc adm policy add-scc-to-user anyuid -z cluster-local-gateway-service-account -n
 ```
 ###### install Istio
 ```
-oc apply -f install/kubernetes/istio-auth.yaml
-
-#or
 curl -L https://storage.googleapis.com/knative-releases/serving/latest/istio.yaml \
   | sed 's/LoadBalancer/NodePort/' \
   | oc apply --filename -
