@@ -15,9 +15,9 @@ istioctl version
 ```
 
 #### install Istio
+###### grant the necessary privileges to the service accounts istio will use
 ```
 oc login -u system:admin
-
 #project: istio-system
 #allow few service accounts added to this project
 
@@ -35,11 +35,41 @@ oc adm policy add-scc-to-user anyuid -z istio-egress-service-account -n istio-sy
 #sa run as: anyuid
 oc adm policy add-scc-to-user anyuid -z default -n istio-system
 
+#3
+#others
+oc adm policy add-scc-to-user anyuid -z prometheus -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-citadel-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-ingressgateway-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-cleanup-old-ca-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-mixer-post-install-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-mixer-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-pilot-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z istio-sidecar-injector-service-account -n istio-system
+oc adm policy add-cluster-role-to-user cluster-admin -z istio-galley-service-account -n istio-system
+oc adm policy add-scc-to-user anyuid -z cluster-local-gateway-service-account -n istio-system
 
-#install Istio
+```
+###### install Istio
+```
 oc apply -f install/kubernetes/istio-auth.yaml
 
-#verify
+#or
+curl -L https://storage.googleapis.com/knative-releases/serving/latest/istio.yaml \
+  | sed 's/LoadBalancer/NodePort/' \
+  | oc apply --filename -
+```
+###### configure
+```
+#Set priviledged to true for the istio-sidecar-injector:
+oc get cm istio-sidecar-injector -n istio-system -oyaml  \
+| sed -e 's/securityContext:/securityContext:\\n      privileged: true/' \
+| oc replace -f -
+```
+
+
+
+###### verify
+```
 oc project istio-system
 
 oc get sa/pods/crd/attributemanifests/prometheuses/rules/logentries/stdios/deployments
