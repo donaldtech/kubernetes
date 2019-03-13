@@ -43,7 +43,7 @@ FROM ubuntu:16.04
 MAINTAINER whataas.com
 RUN apt-get -y update && \
     apt-get -y install python-pip python-dev
-COPY ./requrements.txt /app/requirements.txt
+COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r reqiurements.txt
 COPY . /app
@@ -54,7 +54,11 @@ CMD ['app.py']
 
 
 docker build -t whataas/flaskapp:latest .
+create repository whataas/flaskapp
+docker login
 docker push whataas/flaskapp:latest
+
+#repository名字就是你的镜像名字，不同tags而已
 ```
 
 - use the image
