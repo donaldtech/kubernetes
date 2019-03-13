@@ -52,9 +52,10 @@ CMD['app.py']
 
 #ENTRYPOINT configures the container to run as an executable; only the last ENTRYPOINT instruction executes
 
-```
+
 docker build -t whataas/flaskapp:latest .
 docker push whataas/flaskapp:latest
+```
 
 - use the image
 ```
