@@ -46,9 +46,9 @@ RUN apt-get -y update && \
 COPY ./requrements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r reqiurements.txt
-CPOY . /app
-ENTRYPOINT['python']
-CMD['app.py']
+COPY . /app
+ENTRYPOINT ['python']
+CMD ['app.py']
 
 #ENTRYPOINT configures the container to run as an executable; only the last ENTRYPOINT instruction executes
 
