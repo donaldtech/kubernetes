@@ -57,4 +57,6 @@ docker build -t whataas/flaskapp:latest .
 docker push whataas/flaskapp:latest
 
 - use the image
+```
 docker run -d p 5000:5000 whataas/flaskapp:latest
+```
