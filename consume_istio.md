@@ -13,15 +13,15 @@ URL <br/>
 /env/version   #获取容器中的环境变量<br/><br/>
 /fetch?url=http://weibo.com #获取指定网址的内容<br/>
 
-- source file
-```
-cat app.py
+- source file:确保通过测试，文件是可运行的正确的<br/>
 
+cat app.py
+```
 from flask import Flask
 import os
 import urllib.request
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 @app.route('/env/<env>')
 def show_env():
@@ -33,12 +33,13 @@ def fetch_env():
     with urllib.request.urlopen(url) as response:
         return response.read()
 
-if __name__ == '__main__':vim
+if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
 ```
 
 - docker image/dockerize a Flask application
 https://runnable.com/docker/python/dockerize-your-flask-application <br/>
+python version
 ```
 pydoc-->python-->python2-->python2.7
 yum -y install python-pip
@@ -48,41 +49,61 @@ yum -y install python36
 pydoc3.6-->/usr/bin/python36-->python3.6-->python3.6m-->pyvenv-3.6
 
 yum -y install python36-pip
-/usr/bin/pip3.6
+/usr/bin/pip3
 ```
-```
+
 cat requirements.txt
-
+```
 Flask==0.10.1
-os
-urllib
-
-
+#os==0.2.14
+#urllib==1.24.1
+#自带
+```
 
 cat Dockerfile
-
+```
 #FROM ubuntu:16.04
-FROM centos
+FROM centos:7.6.1810
 
 MAINTAINER whataas.com
 
 #RUN apt-get -y update && \
 #    apt-get -y install python-pip python-dev
-RUN yum -y install python36
+RUN yum -y install eple-release
 RUN yum -y install python36 && \
     yum -y install python36-pip python36-devel
     
 COPY ./requirements.txt /app/requirements.txt
 WORKDIR /app
-RUN
-RUN pip3.6 install -r reqiurements.txt
+RUN pip3.6 install -r requirements.txt
 COPY . /app
-ENTRYPOINT ['python3.6']
+ENTRYPOINT ['python36']
 CMD ['app.py']
 
 #ENTRYPOINT configures the container to run as an executable; only the last ENTRYPOINT instruction executes
 
+ROM centos
 
+
+RUN yum -y install epel-release && \
+    yum -y install python36 && \
+    yum -y install python36-pip python36-devel
+# We copy just the requirements.txt first to leverage Docker cache
+COPY ./requirements.txt /app/requirements.txt
+
+WORKDIR /app
+
+RUN pip3.6 install -r requirements.txt
+
+COPY . /app
+
+ENTRYPOINT [ "python36" ]
+
+CMD [ "app.py" ]
+```
+
+build
+```
 docker build -t whataas/flaskapp:latest .
 create repository whataas/flaskapp
 docker login
