@@ -23,6 +23,10 @@ import urllib.request
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return "hi"
+
 @app.route('/env/<env>')
 def show_env():
     return os.environ.get(env)
@@ -55,6 +59,7 @@ yum -y install python36-pip
 
 pip3.6 install flask
 pthon36 app.py
+curl http://127.0.0.1:5000/env/version
 ```
 
 
@@ -133,7 +138,7 @@ spec:
     app: flaskapp
   ports:
     - name: http
-      port: 80
+      port: 5000  #Pod暴露的端口
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -245,6 +250,15 @@ oc get pods
 
 测试连通性
 ```
+本机测试
+oc get svc
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+docker-registry   ClusterIP   172.30.1.1       <none>        5000/TCP                  1h
+flaskapp          ClusterIP   172.30.178.220   <none>        5000/TCP                  1m
+
+curl http://172.30.19.194:5000/
+
+
 oc exec -it sleep-6d755dfb7b-f7sxp -c sleep bash
 http --body http://flaskapp/env/version
 ```
