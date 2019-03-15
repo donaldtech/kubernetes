@@ -116,6 +116,62 @@ docker push whataas/flaskapp:latest
 
 
 ### 1. 使用Deployment将一个应用的两个版本部署到网格中
+```
 2个Deployment表示app2个版本flaskapp-v2,flaskapp-v2
 1个Service flaskapp
-
+```
+cat flaskapp.istio.yaml
+```
+apiVersion: v1
+kind: Service
+metadata:
+  name: flaskapp
+  labels:
+    app: flaskapp
+spec:
+  selector:
+    app: flaskapp
+  ports:
+    - name: http
+      port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: flaskapp-v1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: flaskapp
+        version: v1
+    spec:
+      containers:
+        - name: flaskapp
+          image: whataas/flaskapp
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: version
+            version: v1
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: flaskapp-v2
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: flaskapp
+        version: v2
+    spec:
+      containers:
+        - name: flaskapp
+          image: whataas/flaskapp
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: version
+            version: v2
+```
