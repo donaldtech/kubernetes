@@ -138,7 +138,7 @@ spec:
     app: flaskapp
   ports:
     - name: http
-      port: 5000  #Pod暴露的端口
+      port: 5000  #Pod暴露的端口, flask默认此端口
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -157,8 +157,8 @@ spec:
           image: whataas/flaskapp
           imagePullPolicy: IfNotPresent
           env:
-          - name: version
-            version: v1
+          - name: version   #env name & value
+            value: v1
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -178,7 +178,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
           - name: version
-            version: v2
+            value: v2
 ```
 istioctl 修改k8s Deployment，在Pod中注入Sidecar容器
 ```
@@ -258,7 +258,7 @@ flaskapp          ClusterIP   172.30.178.220   <none>        5000/TCP           
 
 curl http://172.30.19.194:5000/
 
-
+客户机测试
 oc exec -it sleep-6d755dfb7b-f7sxp -c sleep bash
-http --body http://flaskapp/env/version
+http --body http://flaskapp:5000
 ```
