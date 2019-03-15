@@ -170,7 +170,7 @@ spec:
     metadata:
       labels:
         app: flaskapp
-        version: v2
+        version: v2  #标签
     spec:
       containers:
         - name: flaskapp
@@ -266,3 +266,36 @@ for i in `seq 10`;do
 > done
 =for i in `seq 10`;do http --body http://flaskapp:5000/env/version; done
 ```
+
+
+### 编写策略文件，流量管理
+现在用Istio来管理两个Pod流量
+1. flask应用的目标规则
+cat flaskapp-destinationrule.yaml 
+```
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: flaskapp
+spec:
+  host: flaskapp
+  subsets:
+  - name: v1
+    labels:
+      version: v1
+  - name: v2
+    labels:
+      version: v2
+
+```
+#名为flaskapp的DestinationRule <br/>
+#利用Pod的标签labels:        把flask主机服务分成了两个subnet，分别命名为v1,v2 <br/>
+              app: flaskapp <br/>
+              version: v2  <br/>
+ 提交到集群上
+ ```
+ oc apply -f flaskapp-destinationrule.yaml
+ ```
+ 
+ 2. flask应用的默认路由规则
+ 不管是否进一步流量控制，都建议为网格中的服务创建默认路由规则，防止意料之外的访问结果
