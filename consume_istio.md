@@ -10,7 +10,7 @@ Istio 流量管理
 
 ### 0. flask应用程序
 URL <br/>
-/env/version   #获取容器中的环境变量<br/><br/>
+/env/version   #获取容器中的环境变量version的值<br/><br/>
 /fetch?url=http://weibo.com #获取指定网址的内容<br/>
 
 - source file:确保通过测试，文件是可运行的正确的<br/>
@@ -189,8 +189,62 @@ Volumes:
   istio-envoy:
   istio-certs:
   default-token-55gzt:
+  
+oc delete -f flaskapp.istio.yaml
 ```
 
 ### 2. 客户端部署到网格中
+cat sleep.yaml <br/>
+安装了各种测试工具如http的镜像，测试可在其内部的shell中完成
 ```
+apiVersion: v1
+kind: Service
+metadata:
+  name: sleep
+  labels:
+    app: sleep
+    version: v1
+spec:
+  selector:
+    app: sleep
+    version: v1
+  ports:
+    - name: ssh
+      port: 80
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: sleep
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: sleep
+        version: v1
+    spec:
+      containers:
+      - name: sleep
+        image: whataas/sleep
+        imagePullPolicy: IfNotPresent
+---
+```
+虽然没有对外的服务，还是要创建Service；没有Service的Deployment无法被Istio发现
+docker镜像重命名
+```
+docker pull dustise/sleep:latest
+docker tag  dustise/sleep:latest whataas/sleep:latest //两个镜像
+docker push
+```
+注入
+```
+istioctl kube-inject -f sleep.yaml |oc apply -f -
+oc get pods
+```
+
+测试连通性
+```
+oc exec -it sleep-6d755dfb7b-f7sxp -c sleep bash
+http --body http://flaskapp/env/version
 ```
