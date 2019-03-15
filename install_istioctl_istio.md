@@ -2,7 +2,29 @@ https://github.com/VeerMuchandi/istio-on-openshift/blob/master/DeployingIstioWit
 
 #### create OpenShift Cluster
 ```
-oc cluster up
+oc cluster up --write-config --public-hostname='10.62.87.232'
+
+# Enable admission webhooks
+sed -i -e 's/"admissionConfig":{"pluginConfig":null}/"admissionConfig": {\
+    "pluginConfig": {\
+        "ValidatingAdmissionWebhook": {\
+            "configuration": {\
+                "apiVersion": "v1",\
+                "kind": "DefaultAdmissionConfig",\
+                "disable": false\
+            }\
+        },\
+        "MutatingAdmissionWebhook": {\
+            "configuration": {\
+                "apiVersion": "v1",\
+                "kind": "DefaultAdmissionConfig",\
+                "disable": false\
+            }\
+        }\
+    }\
+}/' openshift.local.clusterup/kube-apiserver/master-config.yaml
+
+oc cluster up --public-hostname='10.62.87.232' --server-loglevel=5
 #download and start an OpenShift all-in-one image and start this image to run OpenShift
 ```
 
@@ -47,7 +69,8 @@ oc adm policy add-scc-to-user anyuid -z istio-pilot-service-account -n istio-sys
 oc adm policy add-scc-to-user anyuid -z istio-sidecar-injector-service-account -n istio-system
 oc adm policy add-cluster-role-to-user cluster-admin -z istio-galley-service-account -n istio-system
 oc adm policy add-scc-to-user anyuid -z cluster-local-gateway-service-account -n istio-system
-
+oc adm policy add-scc-to-user privileged -z default -n default
+oc label namespace default istio-injection=enabled
 ```
 ###### install Istio
 ```
