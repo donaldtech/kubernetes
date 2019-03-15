@@ -256,9 +256,13 @@ NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)            
 docker-registry   ClusterIP   172.30.1.1       <none>        5000/TCP                  1h
 flaskapp          ClusterIP   172.30.178.220   <none>        5000/TCP                  1m
 
-curl http://172.30.19.194:5000/
+curl http://172.30.19.194:5000/env/version
 
 客户机测试
 oc exec -it sleep-6d755dfb7b-f7sxp -c sleep bash
-http --body http://flaskapp:5000
+http --body http://flaskapp:5000/env/version
+for i in `seq 10`;do
+> http --body http://flaskapp:5000/env/version
+> done
+=for i in `seq 10`;do http --body http://flaskapp:5000/env/version; done
 ```
