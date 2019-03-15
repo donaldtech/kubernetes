@@ -175,3 +175,22 @@ spec:
           - name: version
             version: v2
 ```
+istioctl 修改k8s Deployment，在Pod中注入Sidecar容器
+```
+istioctl kube-inject -f flaskapp.istio.yaml |oc apply -f -
+oc get pods -n default
+oc describe pod flaskapp-v1-7b9f85444b-k49qp
+Init Containers:
+  istio-init   //初始化的劫持
+Containers:
+  flaskapp
+  istio-proxy  //注入的结果
+Volumes:
+  istio-envoy:
+  istio-certs:
+  default-token-55gzt:
+```
+
+### 2. 客户端部署到网格中
+```
+```
