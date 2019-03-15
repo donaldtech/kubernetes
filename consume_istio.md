@@ -113,3 +113,9 @@ docker push whataas/flaskapp:latest
 
 #repository名字就是你的镜像名字，不同tags而已
 ```
+
+
+### 1. 使用Deployment将一个应用的两个版本部署到网格中
+2个Deployment表示app2个版本flaskapp-v2,flaskapp-v2
+1个Service flaskapp
+
