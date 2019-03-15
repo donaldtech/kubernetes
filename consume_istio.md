@@ -37,22 +37,33 @@ if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
 ```
 
-- docker image/dockerize a Flask application
-https://runnable.com/docker/python/dockerize-your-flask-application <br/>
+
+- test app
 python version
 ```
-pydoc-->python-->python2-->python2.7
+pydoc-->[python]-->python2-->python2.7
 yum -y install python-pip
-pip pip2 pip2.7
+/usr/bin/[pip] pip2 pip2.7
 
 yum -y install python36
-pydoc3.6-->/usr/bin/python36-->python3.6-->python3.6m-->pyvenv-3.6
+pydoc3.6-->/usr/bin/[python36]-->python3.6-->python3.6m-->pyvenv-3.6
 
 yum -y install python36-pip
-/usr/bin/pip3
+/usr/local/bin/pip pip3 [pip3.6]
+
+
+
+pip3.6 install flask
+pthon36 app.py
 ```
 
-cat requirements.txt
+
+
+- docker image/dockerize a Flask application
+https://runnable.com/docker/python/dockerize-your-flask-application <br/>
+
+
+- cat requirements.txt
 ```
 Flask==0.10.1
 #os==0.2.14
@@ -60,17 +71,17 @@ Flask==0.10.1
 #自带
 ```
 
-cat Dockerfile
+- cat Dockerfile
 ```
 #FROM ubuntu:16.04
-FROM centos:7.6.1810
+FROM centos
 
 MAINTAINER whataas.com
 
 #RUN apt-get -y update && \
 #    apt-get -y install python-pip python-dev
-RUN yum -y install eple-release
-RUN yum -y install python36 && \
+RUN yum -y install epel-release && \
+    yum -y install python36 && \
     yum -y install python36-pip python36-devel
     
 COPY ./requirements.txt /app/requirements.txt
@@ -82,37 +93,23 @@ CMD ['app.py']
 
 #ENTRYPOINT configures the container to run as an executable; only the last ENTRYPOINT instruction executes
 
-ROM centos
-
-
-RUN yum -y install epel-release && \
-    yum -y install python36 && \
-    yum -y install python36-pip python36-devel
-# We copy just the requirements.txt first to leverage Docker cache
-COPY ./requirements.txt /app/requirements.txt
-
-WORKDIR /app
-
-RUN pip3.6 install -r requirements.txt
-
-COPY . /app
-
-ENTRYPOINT [ "python36" ]
-
-CMD [ "app.py" ]
 ```
 
-build
+- build
 ```
 docker build -t whataas/flaskapp:latest .
+```
+
+- test the image
+```
+docker run -it whataas/flaskapp:latest
+```
+
+- push
+```
 create repository whataas/flaskapp
 docker login
 docker push whataas/flaskapp:latest
 
 #repository名字就是你的镜像名字，不同tags而已
-```
-
-- use the image
-```
-docker run -d p 5000:5000 whataas/flaskapp:latest
 ```
