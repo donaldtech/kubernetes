@@ -40,6 +40,10 @@ istioctl version
 ###### grant the necessary privileges to the service accounts istio will use
 ```
 oc login -u system:admin
+oc project default
+oc adm policy add-scc-to-user privileged -z default -n default
+oc label namespace default istio-injection=enabled
+
 #project: istio-system
 #allow few service accounts added to this project
 
@@ -69,14 +73,17 @@ oc adm policy add-scc-to-user anyuid -z istio-pilot-service-account -n istio-sys
 oc adm policy add-scc-to-user anyuid -z istio-sidecar-injector-service-account -n istio-system
 oc adm policy add-cluster-role-to-user cluster-admin -z istio-galley-service-account -n istio-system
 oc adm policy add-scc-to-user anyuid -z cluster-local-gateway-service-account -n istio-system
-oc adm policy add-scc-to-user privileged -z default -n default
-oc label namespace default istio-injection=enabled
 ```
 ###### install Istio
 ```
-curl -L https://storage.googleapis.com/knative-releases/serving/latest/istio.yaml \
+curl -L https://storage.googleapis.com/knative-releases/serving/latest/istio.yaml -k \
   | sed 's/LoadBalancer/NodePort/' \
   | oc apply --filename -
+  
+oc get pods -n istio-system
+
+oc delete pods <pod_name> --grace-period=0 --force
+oc delete project <project_name>
 ```
 ###### configure
 ```
