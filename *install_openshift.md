@@ -1,6 +1,6 @@
 ### install newest docker
 ```
-#delet old version docker
+#delete old version docker
 systemctl status docker
 if [ $? -eq 0 ];then
   systemctl stop docker
@@ -14,9 +14,11 @@ echo "baseurl=https://yum.dockerproject.org/repo/main/centos/7/" >> /etc/yum.rep
 echo "enabled=1" >> /etc/yum.repos.d/docker.repo
 echo "gpgcheck=1" >> /etc/yum.repos.d/docker.repo
 echo "gpgkey=https://yum.dockerproject.org/gpg" >> /etc/yum.repos.d/docker.repo
+yum clean all
+yum repolist
 
 #install newer version docker
-yum -y install  docekr-engine
+yum -y install  docker-engine
 
 rm -rf /var/lib/docker   #this will remove all existing containers and images.
 
