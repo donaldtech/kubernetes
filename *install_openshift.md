@@ -1,6 +1,9 @@
 ### install newest docker
 ```
 #delet old version docker
+systemctl status docker
+if [ $? -eq 0 ];then
+  systemctl stop docker
 yum -y remove *docker*
 
 #add yum repo for docker
