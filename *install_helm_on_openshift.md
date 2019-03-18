@@ -1,9 +1,20 @@
-https://blog.osninja.io/using-helm-on-openshift/
+### helm
+- 舵柄
+- 强大的Kubernetes包管理工具,看作Kubernetes下的apt-get/yum
 
+#### helm 组件
+<img src="http://img.zhaohuabing.com/in-post/2018-04-16-using-helm-to-deploy-to-kubernetes/helm-architecture.png"></img>
+- Helm - 客户端
+- Tiller - 服务器
+- Chart - 软件包
+- Repositry - 软件包仓库
+- Release - Chart包部署的一个应用实例。其实Helm中的Release叫做Deployment更合适。估计因为Deployment这个概念已经被Kubernetes使用了
+
+### Install helm
+https://blog.osninja.io/using-helm-on-openshift/ <br/>
 https://blog.openshift.com/getting-started-helm-openshift/
 
-
--  Create an OpenShift project for Tiller
+- Create an OpenShift project for Tiller
 ```
 oc new-project tiller
 Now using project "tiller" on server "https://10.62.87.232:8443".
@@ -44,22 +55,12 @@ oc rollout status deployment tiller
 
 Waiting for rollout to finish: 0 of 1 updated replicas are available...
 deployment "tiller" successfully rolled out
-
-
+```
+- check
+```
 ./helm version
 Client: &version.Version{SemVer:"v2.9.0", GitCommit:"f6025bb9ee7daf9fee0026541c90a6f557a3e0bc", GitTreeState:"clean"}
 Server: &version.Version{SemVer:"v2.9.0", GitCommit:"f6025bb9ee7daf9fee0026541c90a6f557a3e0bc", GitTreeState:"clean"}
 ```
 
-- Create a separate project where we’ll install a Helm Chart.
-```
-oc new-project myapp
-```
-
-- Grant the Tiller server edit access to the current project.
-```
-oc policy add-role-to-user edit "system:serviceaccount:${TILLER_NAMESPACE}:tiller"
-```
-
-- v
-
+### use helm
