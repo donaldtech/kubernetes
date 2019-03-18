@@ -1,5 +1,5 @@
 
-## deploy app on Knative
+# deploy app on Knative
 #### cat helloworld.go --source code
 ```
 package main
@@ -86,14 +86,16 @@ spec:
 1. create image
 ```
 # Build the container on your local machine
-docker build -t donaldtechnologies/helloworld-go .
+docker build -t whataas/helloworld-go .
 
 # Push the container to docker registry
-docker push donaldtechnologies/helloworld-go
+docker push whataas/helloworld-go
 ```
 2. deploy app
 ```
 oc apply --filename service.yaml
+service.serving.knative.dev "helloworld-go" created
+
 oc delet --filename service.yaml
 ```
 3. interact with app
@@ -114,7 +116,7 @@ oc get ksvc helloworld-go  --output=custom-columns=NAME:.metadata.name,DOMAIN:.s
 curl -H "Host: helloworld-go.default.example.com" http://${IP_ADDRESS}
 ```
 
-## Serving
+# Serving
 support deploying and serving of serverless applications and functions. <br/>
 defines a set of objects as Kubernetes Custom Resource Definitions (CRDs), used to define and control how your serverless workload behaves on the cluster<br/>
 <img src="https://github.com/knative/serving/raw/master/docs/spec/images/object_model.png"></img><br/>
@@ -124,7 +126,7 @@ defines a set of objects as Kubernetes Custom Resource Definitions (CRDs), used 
 - Revision: The revision.serving.knative.dev resource is a point-in-time snapshot of the code and configuration for each modification made to the workload. Revisions are immutable objects and can be retained for as long as useful.
 - With the Service resource, a deployed service will automatically have a matching route and configuration created. Each time the Service is updated, a new revision is created.
 
-## Build 
+# Build 
 to build the source code of your apps into container images, which you can then run on Knative serving<br/>
 A Build can include multiple steps where each step specifies a Builder.<br/>
 A builder is a type of container image that you create to accomplish any task, whether that's a single step in a process, or the whole process itself.<br/>
@@ -156,6 +158,6 @@ oc get build hello-build --output yaml
 oc logs $(kubectl get build hello-build --output jsonpath={.status.cluster.podName}) --container build-step-hello
 ```
 
-## eventing
+# eventing
 
-## 
+
