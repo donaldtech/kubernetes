@@ -292,10 +292,52 @@ spec:
 #利用Pod的标签labels:        把flask主机服务分成了两个subnet，分别命名为v1,v2 <br/>
               app: flaskapp <br/>
               version: v2  <br/>
- 提交到集群上
+提交到集群上
+```
+oc apply -f flaskapp-destinationrule.yaml
+```
+
+2. flask应用的默认路由规则
+不管是否进一步流量控制，都建议为网格中的服务创建默认路由规则，防止意料之外的访问结果
+```
+cat flaskapp-default-vs-v2.yaml
+
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: flaskapp-default-v2
+spec:
+  hosts:
+  - flaskapp   #负责接管对主机名为flaskapp的访问
+  http:
+  - route: 
+    - destination:
+        host: flaskapp 
+        subset: v2    #所有流量转发到DestinationRule定义的v2 subnet上
+        
+oc apply -f flaskapp-default-vs-v2.yaml
+virtualservice.networking.istio.io "flaskapp-default-v2" created
+```
+```
+本机测试
+oc get svc
+NAME              TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                   AGE
+docker-registry   ClusterIP   172.30.1.1       <none>        5000/TCP                  1h
+flaskapp          ClusterIP   172.30.178.220   <none>        5000/TCP                  1m
+
+curl http://172.30.19.194:5000/env/version
+# 还是v1, v2轮流，因为访问的是ip，不是主机名flaskapp
+
+
+客户机测试
+oc exec -it sleep-6d755dfb7b-f7sxp -c sleep bash
+http --body http://flaskapp:5000/env/version
+for i in `seq 10`;do
+> http --body http://flaskapp:5000/env/version
+> done
+=for i in `seq 10`;do http --body http://flaskapp:5000/env/version; done
  ```
- oc apply -f flaskapp-destinationrule.yaml
- ```
- 
- 2. flask应用的默认路由规则
- 不管是否进一步流量控制，都建议为网格中的服务创建默认路由规则，防止意料之外的访问结果
+ 默认路由已经生效，流量控制成功
+```
+oc delete -f flaskapp-default-vs-v2.yaml
+```
