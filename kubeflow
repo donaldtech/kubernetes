@@ -1,0 +1,180 @@
+Deploy Kubeflow
+uses Ksonnet to deploy Kubeflow to an existing Kubernetes cluster
+export GITHUB_TOKEN=99510f2ccf40e496d1e97dbec9f31cb16770b884
+
+export KUBEFLOW_VERSION=0.2.5 curl https://raw.githubusercontent.com/kubeflow/kubeflow/v${KUBEFLOW_VERSION}/scripts/deploy.sh | bash
+
+kubectl get pods
+kubectl get crd
+
+
+Deploy PyTorch Extension
+cd kubeflow_ks_app 
+ks generate pytorch-operator pytorch-operator 
+ks apply default -c pytorch-operator
+kubectl get crd
+
+install ks
+$ks
+
+Install kubeflow
+Kubeflow_ks_app
+Kubeflow_repo
+
+
+
+
+
+Clean k8s
+Kubeadm rest
+Rm -rf ~/.kube
+
+Install spefici version of kubeadm kubelet and kubectl
+Yum list –showduplicates kubeadm –disableexclude=kubernetes
+Yum -y install kubeadm-1.14.1-0
+https://kubernetes.io/docs/tasks/administer-cluster/kubeadm-upgrade-1-14/
+
+
+
+Allowing pod scheduling on the master
+kubectl taint nodes –all node-role.kubernetes.io/master-
+
+
+kubectl get pods --all-namespaces
+kubectl -n kubeflow describe pod ambassador-784d4d757-cvq6x
+
+
+
+
+
+
+
+
+
+
+
+
+Arch
+https://towardsdatascience.com/kubeflow-for-poets-a05a5d4158ce
+
+Kfctl v0.5 ==ks https://v0-5.kubeflow.org/docs/started/getting-started-k8s/
+
+
+
+Kubeflow GUI
+export NAMESPACE=kubeflow;
+kubectl port-forward svc/ambassador -n ${NAMESPACE} --address 10.62.87.232 9999:80
+-notebooks
+TFJob Dashboard
+Katib Dashboard
+Pipeline Dashboard
+
+
+Set Up Your Jupyter notebooks on Kubeflow
+You can set up multiple notebook servers per Kubeflow deployment. Each notebook server can include multiple notebooks. Each notebook server belongs to a single namespace
+1.	 NEW SERVER to create a notebook server.
+2.	Mynotebook
+docker pull gcr.io/kubeflow-images-public/tensorflow-1.13.1-notebook-cpu:v0.5.0 takes a long time
+None: auto-create pv/pvc
+Pv/pvc 
+https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/
+3.	When the notebook server provisioning is complete, click CONNECT
+4.	train
+The default notebook image includes all the plugins that you need to train a TensorFlow model with Jupyter, including Tensorboard for rich visualizations and insights into your model.
+
+
+
+Kubeflow Pipelines UI
+
+
+kubectl get pod -n kubeflow
+NAME                                                        READY   STATUS             RESTARTS   AGE
+ml-pipeline-79474f7b99-2dkww                                1/1     Running            314        42h
+ml-pipeline-persistenceagent-c56c89b98-czh67                1/1     Running            338        42h
+
+kubectl describe pod ml-pipeline-persistenceagent-c56c89b98-czh67  -n kubeflow
+Warning  BackOff  5m37s (x7796 over 42h)  kubelet, master  Back-off restarting failed container
+
+
+kubectl logs ml-pipeline-persistenceagent-c56c89b98-czh67  -n kubeflow
+W0711 04:20:13.416232       1 client_config.go:552] Neither --kubeconfig nor --master was specified.  Using the inClusterConfig.  This might not work.
+
+
+kubectl logs ml-pipeline-79474f7b99-2dkww -n kubeflow
+I0711 04:21:18.380123       6 client_manager.go:114] Initializing client manager
+F0711 04:28:06.217559       6 error.go:296] dial tcp 10.109.222.85:3306: connect: connection refused
+
+
+
+
+
+Pipeline没有
+Pv/pvc
+get pvc -n kubeflow
+NAME             STATUS    VOLUME   CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+katib-mysql      Pending                                                     6m9s
+minio-pvc        Pending                                                     5m27s
+mysql-pv-claim   Pending                                                     5m27s
+kubectl describe pvc minio-pvc -n kubeflow
+no persistent volumes available for this claim and no storage class is set
+
+看需求
+kubectl get pvc -o custom-columns='name:{.metadata.name},storage:{.spec.resources.requests.storage}' -n kubeflow
+name             storage
+katib-mysql      10Gi
+minio-pvc        20Gi
+mysql-pv-claim   20Gi
+
+自动创建
+create new storage volumes—》create PersistentVolume objects to represent them in Kubernetes
+Dynamic volume provisioning allows storage volumes to be created on-demand
+based on the API object StorageClass from the API group storage.k8s.io
+https://www.kubeflow.org/docs/other-guides/troubleshooting/
+
+
+
+手动创建
+mkdir /mnt/pv1 /mnt/pv2 /mnt/pv3
+
+kubectl create -f - <<EOF
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-volume3
+spec:
+  storageClassName:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/pv3"
+EOF
+
+Pvc自动搜寻pv
+
+kubectl get pvc -n kubeflow
+NAME             STATUS   VOLUME       CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+katib-mysql      Bound    pv-volume1   10Gi       RWO                           44m
+minio-pvc        Bound    pv-volume3   20Gi       RWO                           43m
+mysql-pv-claim   Bound    pv-volume2   20Gi       RWO                           43m
+
+pipeline done
+
+
+
+Kubeflow Pipelines is a platform for building and deploying portable, scalable machine learning (ML) workflows based on Docker containers.
+Run a basic pipeline
+
+[Sample] Basic - Parallel Join
+Create an experiment: 
+experiment named My experiment and are now creating a run named My first run
+start
+click My first run
+
+
+
+
+ 
+seldon-redis-85f5598c84-nmw7s                               0/1     ContainerCreating   0          26s
+seldon-seldon-cluster-manager-74cf496d8f-vldqk              1/1     Running             0          27s
