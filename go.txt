@@ -1,0 +1,21 @@
+语言特性
+
+垃圾回收gc
+只需要new分配内存，不需要释放
+内存自动回收，无需管理内存，防止内存泄露
+专注业务实现
+
+天然并发（多核）
+语言层面支持 go fmt.Println("hi")，简单
+goroutine,轻量级线程，成千上万个，自动跑在多核上（redis单进程，只能跑一个CPU；跑多个进程实例，充分利用多核）
+channel 支持任何类型；多个goroutine之间通信
+基于CSP/Communicating Sequential Process模型实现=goroutine+channel
+
+pipe <- 1 //存数据
+var <- pipe //取数据
+
+
+
+
+
+
