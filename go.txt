@@ -16,6 +16,10 @@ channel 支持任何类型；多个goroutine之间通信
 
 3.多返回值（Python）
 4.无需担心编码，均是utf-8
+5. Micro Service
+The standard library is small.
+A [single] <binary> is easy to deploy.  
+[No dependecnies]  <There are no humongous runtime like the JVM, Python or Node.js.>
 
 小技巧
 1.语言格式化
@@ -26,7 +30,19 @@ go fmt github.com/...
 2.多行注释
 CTRL+/
 
+3.windows环境变量
+Control Panel\System and Security\System\Advanced System Settings
 
-Micro Service
-The standard library is small.
-A single binary is easy to deploy. There are no humongous runtime like the JVM, Python or Node.js. No dependecnies
+4. go tour
+https://tour.golang.org/welcome/1
+
+
+包和工具链
+go build / import 基于src
+go build ../../.. 到main包位置
+
+主包
+平级资源包 import
+子级资源包 import
+
+
