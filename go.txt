@@ -1,21 +1,32 @@
 语言特性
 
-垃圾回收gc
+1.垃圾回收gc
 只需要new分配内存，不需要释放
 内存自动回收，无需管理内存，防止内存泄露
 专注业务实现
 
-天然并发（多核）
+2.天然并发（多核）
 语言层面支持 go fmt.Println("hi")，简单
 goroutine,轻量级线程，成千上万个，自动跑在多核上（redis单进程，只能跑一个CPU；跑多个进程实例，充分利用多核）
 channel 支持任何类型；多个goroutine之间通信
+  pipe <- 1 //存数据
+  var <- pipe //取数据
 基于CSP/Communicating Sequential Process模型实现=goroutine+channel
 
-pipe <- 1 //存数据
-var <- pipe //取数据
+
+3.多返回值（Python）
+4.无需担心编码，均是utf-8
+
+小技巧
+1.语言格式化
+gofmt -w main.go //四格 -w write result to (source) file instead of stdout
+//You can use three dots (...) as a wildcard. So for example, the following command will format all github.com packages:
+go fmt github.com/...
+
+2.多行注释
+CTRL+/
 
 
-
-
-
-
+Micro Service
+The standard library is small.
+A single binary is easy to deploy. There are no humongous runtime like the JVM, Python or Node.js. No dependecnies
