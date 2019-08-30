@@ -46,3 +46,7 @@ go build ../../.. 到main包位置
 子级资源包 import
 
 
+https://gorm.io
+https://github.com/google/pprof
+
+
